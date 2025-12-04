@@ -21,6 +21,29 @@ Overall accuracy: 4.70% (47/1000)
 I saw the outputs and it has "yes.", "no." instead of true or false. So, I need to refine my evaluator and system prompt.
 
 
+## Commit 4: Refined evaluator.py
+
+- I have added implementation for removing articles because I saw some answers are correct but just have one article that makes it not countable for accuracy. 
+- Added synonyms for true/false questions (yes-true, no-false)
+- Modified system prompt to make it strictly adhere to output format either specified in the user prompt or just give the final answer without any reasoning steps.
+- Even more common_sense questions would have matched for multiple choice questions if the model didn't add the choice number and just the answer.
+
+result:
+```bash
+Evaluation started with strategy: baseline
+Evaluation for strategy: baseline
+domain: math (9/300) accuracy: 3.00%
+domain: coding (0/100) accuracy: 0.00%
+domain: future_prediction (0/100) accuracy: 0.00%
+domain: planning (0/100) accuracy: 0.00%
+domain: common_sense (118/400) accuracy: 29.50%
+Overall accuracy: 12.70% (127/1000)
+```
+
+- Showed improvement on common_sense questions and very little on math. Coding, future_prediction, and planning are still not improved.
+- For math, some answers are right but the target output have reasons, and for some items where the target output is just one number, the model responded with explanation even when the system prompt says to strictly give final answer for numeric problems.
+
+
 ## References:
 
 Inference-Time Computations for LLM Reasoning and Planning: A Benchmark and Insights - https://arxiv.org/abs/2502.12521

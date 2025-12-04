@@ -10,15 +10,22 @@ Intuition: I created this file to evaluate the accuracy of model with different 
 time methods or strategies starting with baseline (no method used, just testing
 how good the model is).
 """
+# Erase punctuation
+ARTICLES = {"a", "an", "the"}
+
 def normalize_text(s: str) -> str:
-    # handle boolean values to pass through common_sense domain
+    # handle boolean values to pass through questions in common_sense domain (boolean to string)
     if isinstance(s, bool):
         s = "true" if s else "false"
 
     s = (s or "").strip().lower()
+
     # Remove surrounding punctuation and extra whitespace
     s = re.sub(r"[^\w\s\-']", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
+
+    # Remove articles as I saw some answers are not accurate just because of extra articles.
+    tokens = [t for t in s.split() if t not in ARTICLES]
 
     # Map common synonyms used in these tests
     synonyms = {
@@ -29,8 +36,16 @@ def normalize_text(s: str) -> str:
         "2nd": "second",
         "first place": "first",
         "third place": "third",
+        
+        # true or false synonyms to see if it improves common_sense accuracy
+        "true": "true",
+        "false": "false",
+        "yes": "true",
+        "no": "false",
     }
-    return synonyms.get(s, s)
+    tokens = [synonyms.get(t, t) for t in tokens]
+
+    return " ".join(tokens)
 
 def grade(expected: str, got: str) -> bool:
     return normalize_text(got) == normalize_text(expected)
