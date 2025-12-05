@@ -65,6 +65,31 @@ Overall accuracy: 13.20% (132/1000)
 
 - It didn't show much difference on the evaluate.py output but as I went over the output json file (evaluation_self_consistency.json), I can see that it has given positive answers for planning, and a few future prediction questions, but the output format didn't match with the target output causing them to show up as a fail.
 
+## Commit 7: Implemented Self refine method
+
+- Self refine method contains 3 steps:
+- - Initial answer by model
+- - Give the answer to the model again and ask to critique, and give feedback for improvements
+- - Give the critique, question, and initial answer, ask the model to refine the answer and output final answer.
+
+- This time, I reduced the testing to few examples from all the domain in the dev set. Made sub_dev_set.json and added examples from the given dev set, for faster run times.
+
+As I reduced the size of examples, it gave almost 0 accuracy since I changed the system prompt for refinement step that changed the formatting. 
+
+I tried with various prompts afterwards but finally got less improvements:
+NOTE: the number of questions reduced per domain.
+```bash
+Evaluation started with strategy: self_refine
+Evaluation for strategy: self_refine
+domain: math (0/14) accuracy: 0.00%
+domain: coding (0/11) accuracy: 0.00%
+domain: future_prediction (0/4) accuracy: 0.00%
+domain: planning (0/17) accuracy: 0.00%
+domain: common_sense (3/29) accuracy: 10.34%
+Overall accuracy: 4.00% (3/75)
+```
+
+
 
 ## References:
 
