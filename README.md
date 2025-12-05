@@ -49,7 +49,7 @@ Overall accuracy: 12.70% (127/1000)
 
 - In this method, I have a list of answers that I will get from multiple Chain of Thoughts, and get the most common answer (majority voting).
 
-- I had number of samples (n) = 7. So for each question, it calls llm 7 times (7000 calls).
+- I had number of samples (n) = 7, and temperature = 0.7 for answer diversity. So for each question, it calls llm 7 times (7000 calls).
 
 result:
 ```bash
