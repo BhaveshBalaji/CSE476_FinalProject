@@ -15,6 +15,9 @@ class Agent:
         
         elif self.strategy == "self_refine":
             return self.solve_self_refine(prompt)
+        
+        elif self.strategy == "CoT":
+            return self.solve_chain_of_thought(prompt)
 
     def solve_baseline(self, input):
         result = call_model_chat_completions(input, system= (
@@ -30,6 +33,7 @@ class Agent:
             return (result["text"] or "").strip()
         return ""
     
+    # strategy 1: self consistency
     def solve_self_consistency(self, input, n=7):
         """
         self consistency is a method where we get multiple CoT paths and we choose the majority voting. 
@@ -113,4 +117,41 @@ class Agent:
         
         if refined_answer["ok"]:
             return (refined_answer["text"] or "").strip()
+        return ""
+
+    # strategy 3: Chain of Thought (CoT) prompting
+    def solve_chain_of_thought(self, input):
+        """
+        In Chain of Thought, I call the model twice:
+        - First to generate the reasoning steps
+        - Then, I get the final answer based on the reasoning steps, and the format specified in the quesiton.
+        """
+        # thinking step
+        cot_result = call_model_chat_completions(f"""For question: {input}, think step by step to solve the problem.""",
+                                          system=(
+                                              """
+                                              You are a careful problem solver. Think step by step to solve the problem but do NOT provide the final answer yet.
+                                              Reply with your reasoning steps only.
+                                              """
+                                            ), temperature=0.4)
+
+        if not cot_result["ok"]:
+            return ""
+        
+        cot_reasoning = (cot_result["text"] or "").strip()
+
+        # final answer step
+        final_answer_result = call_model_chat_completions(f"""Based on the following reasoning steps: {cot_reasoning}, provide ONLY the final answer to the question: {input}. """,
+                                                system=(
+                                                    """You are a careful problem solver. Reply with ONLY the final answer with specified format asked in the question.
+                                                       Do NOT provide any explanations, steps, or additional text.
+                                                       If the question is numeric, respond with just the final numeric answer or expression if the question ask for the expression.
+                                                       If the questions are planning related, provide the final plan only in the specified format.
+                                                       For yes/no questions, respond only with 'true' or 'false'.
+                                                       If a question is multiple choice, respond ONLY with the answer text, DO NOT include the choice label like '1)', '3)', 'A)', 'B)', etc.
+                                                       If the question has specified answer format, adhere to it strictly."""
+                                                ))
+
+        if final_answer_result["ok"]:
+            return (final_answer_result["text"] or "").strip()
         return ""

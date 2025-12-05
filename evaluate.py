@@ -80,7 +80,7 @@ def evaluate(dev_data, strategy):
 def main():
     dev_data_path = Path("sub_dev_set.json")
     dev_data = load_dev_data(dev_data_path)
-    evaluate(dev_data, strategy="self_refine")
+    evaluate(dev_data, strategy="CoT")
 
 if __name__ == "__main__":
     main()

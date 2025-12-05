@@ -89,6 +89,36 @@ domain: common_sense (3/29) accuracy: 10.34%
 Overall accuracy: 4.00% (3/75)
 ```
 
+## Commit 8: Implemented Chain of Thought method as strategy 3
+
+- I wanted to experiment with a simpler yet effective method.
+- In this method, I call the llm two times.
+    - First to get thought process (think step by step but not give the final answer yet)
+    - Based on the thought process and question, asked llm to give final answer.
+
+Surprisingly for small amount of dev data, it did better than self refine for common_sense.
+
+result:
+```bash
+Evaluation started with strategy: CoT
+Evaluation for strategy: CoT
+domain: math (0/14) accuracy: 0.00%
+domain: coding (0/11) accuracy: 0.00%
+domain: future_prediction (0/4) accuracy: 0.00%
+domain: planning (0/17) accuracy: 0.00%
+domain: common_sense (11/29) accuracy: 37.93%
+Overall accuracy: 14.67% (11/75)
+```
+Again, some responses still matches the output but just not in the right format.
+
+## output files:
+
+- I have implemented to push all the model prediction, output for comparison for each strategy.
+- Baseline (without any modification to prompt, or any methods) - evaluation_baseline.json
+- self consistency - evaluation_self_consistency.json
+- self refine - evaluation_self_refine.json
+- Chain of Thoughts - evaluation_CoT.json
+
 
 
 ## References:
