@@ -22,11 +22,11 @@ class Agent:
     def solve_baseline(self, input):
         result = call_model_chat_completions(input, system= (
             """
-            You are a careful problem solver. Reply with ONLY the final answer.
+            You are a careful problem solver. Give ONLY the final answer and it should not exceed 5000 characters.
             Do NOT provide any explanations, steps, or additional text.
-            If the question is numeric, respond with just the final answer number.
+            Give final answer for numerical questions or the expression if the question asks for expression.
             For yes/no questions, respond only with 'true' or 'false'.
-            If the question has specified answer format, adhere to it strictly.
+            If a question is multiple choice, respond ONLY with answer text.
             """
         ))
         if result["ok"]:
@@ -39,17 +39,17 @@ class Agent:
         self consistency is a method where we get multiple CoT paths and we choose the majority voting. 
         References say it is good for math and common sense domains.
         input is the prompt and n is the number of CoT samples. (in this case, n = 7)
+        ALWAYS give the final answer and should not exceed 4000 characters.
         """
         cot_answers = []
         for _ in range(n):
             result = call_model_chat_completions(input, system=(
                 """
-                You are a careful problem solver. Reply with ONLY the final answer.
+                You are a careful problem solver. Give ONLY the final answer and it should not exceed 5000 characters.
                 Do NOT provide any explanations, steps, or additional text.
-                If the question is numeric, respond with just the final numeric answer or expression if the question ask for the expression.
+                Give final answer for numerical questions or the expression if the question asks for expression.
                 For yes/no questions, respond only with 'true' or 'false'.
-                If a question is multiple choice, respond ONLY with the answer text, DO NOT include the choice label like '1)', '3)', 'A)', 'B)', etc.
-                If the question has specified answer format, adhere to it strictly.
+                If a question is multiple choice, respond ONLY with answer text.
                 """
             ),
             temperature=0.7 # self consistency requires temperature > 0, and higher temperature gives diverse samples.
@@ -80,11 +80,11 @@ class Agent:
         # initial attempt to answer the question
         initial_attempt = call_model_chat_completions(input, system=(
             """
-            You are a careful problem solver. Reply with ONLY the final answer.
+            You are a careful problem solver. Give ONLY the final answer and it should not exceed 5000 characters.
             Do NOT provide any explanations, steps, or additional text.
-            If the question is numeric, respond with just the final answer number.
+            Give final answer for numerical questions or the expression if the question asks for expression.
             For yes/no questions, respond only with 'true' or 'false'.
-            If the question has specified answer format, adhere to it strictly.
+            If a question is multiple choice, respond ONLY with answer text.
             """
         ), temperature=0.4)
 
@@ -106,13 +106,12 @@ class Agent:
         # refinement step
         refined_answer = call_model_chat_completions(f"""For the question: {input}, here is the initial answer: {initial_answer}. Here is the critique with feedback: {critique_text}. Based on this critique, provide a refined final answer.""",
                                               system=(
-                                                  """You are a careful problem solver. Use the given critique to improve the answer and give final answer in EXACTLY the format asked in the question.
-                                                     Reply with ONLY the final answer.
-                                                     Do NOT provide any explanations, steps, or additional text.
-                                                     If the question is numeric, respond with just the final numeric answer or expression if the question ask for the expression.
-                                                     For yes/no questions, respond only with 'true' or 'false'.
-                                                     If a question is multiple choice, respond ONLY with the answer text, DO NOT include the choice label like '1)', '3)', 'A)', 'B)', etc.
-                                                     If the question has specified answer format, adhere to it strictly."""
+                                                  """You are a careful problem solver. Give ONLY the final answer and it should not exceed 5000 characters.
+                                                       Do NOT provide any explanations, steps, or additional text.
+                                                       Give final answer for numerical questions or the expression if the question asks for expression.
+                                                       For yes/no questions, respond only with 'true' or 'false'.
+                                                       If a question is multiple choice, respond ONLY with answer text.
+                                                    """
                                               ), temperature=0.1)
         
         if refined_answer["ok"]:
@@ -143,14 +142,13 @@ class Agent:
         # final answer step
         final_answer_result = call_model_chat_completions(f"""Based on the following reasoning steps: {cot_reasoning}, provide ONLY the final answer to the question: {input}. """,
                                                 system=(
-                                                    """You are a careful problem solver. Reply with ONLY the final answer with specified format asked in the question.
+                                                    """You are a careful problem solver. Give ONLY the final answer and it should not exceed 5000 characters.
                                                        Do NOT provide any explanations, steps, or additional text.
-                                                       If the question is numeric, respond with just the final numeric answer or expression if the question ask for the expression.
-                                                       If the questions are planning related, provide the final plan only in the specified format.
+                                                       Give final answer for numerical questions or the expression if the question asks for expression.
                                                        For yes/no questions, respond only with 'true' or 'false'.
-                                                       If a question is multiple choice, respond ONLY with the answer text, DO NOT include the choice label like '1)', '3)', 'A)', 'B)', etc.
-                                                       If the question has specified answer format, adhere to it strictly."""
-                                                ))
+                                                       If a question is multiple choice, respond ONLY with answer text.
+                                                    """
+                                                ), temperature=0.1)
 
         if final_answer_result["ok"]:
             return (final_answer_result["text"] or "").strip()

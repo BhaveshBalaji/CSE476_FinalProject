@@ -39,6 +39,8 @@ def evaluate(dev_data, strategy):
             correct_per_domain[domain] = 0
         
         total_per_domain[domain] += 1
+
+        # get model response
         prediction = agent.solve(input)
 
         is_correct = grade(target, prediction)

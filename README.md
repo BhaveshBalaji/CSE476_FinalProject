@@ -1,5 +1,28 @@
 # Inference time reasoning methods
 
+## TL;DR
+
+Implemented 3 inference time reasoning methods:
+    - self consistency multiple CoTs and majority voting.
+
+    - self refine - 3 llm calls (initial answer, critique, refined answer)
+
+    - Chain of Thoughts - 2 llm calls (thinking, final answer)
+
+- To run the test:
+    - Go to "generate_answer_template.py"
+
+    - Select the value of strategy to put inside 
+    ```python
+    agent = Agent(strategy="your_strategy_value")
+    ```
+    
+    - choose the values among ("self_consistency", "self_refine", "CoT")
+
+    - Run "generate_answer_template.py"
+
+
+
 ## Steps I took:
 
 - I referred to some papers related to inference time reasoning methods, to understand which method is suitable for what type of domain.
@@ -111,6 +134,98 @@ Overall accuracy: 14.67% (11/75)
 ```
 Again, some responses still matches the output but just not in the right format.
 
+## Commit 9: Final Test:
+
+### How to run:
+
+In the file 'generate_answer_template.py', check the 
+```python
+build_answer()
+```
+function. 
+
+- In the build_answer() function, I have declared and initialized Agent with strategy = "CoT", which represents Chain of Thoughts strategy. You can change the strategy value to other following strategies:
+```bash
+"self_consistency"
+"self_refine"
+"CoT"
+```
+
+- Run generate_answer_template.py
+
+### Output I got:
+
+- Ran for almost 8 hours (4:45 PM - 12:45 AM)
+
+Terminal output:
+```bash
+Processed 100 questions.
+Processed 200 questions.
+Processed 300 questions.
+Processed 400 questions.
+Processed 500 questions.
+Processed 600 questions.
+Processed 700 questions.
+Processed 800 questions.
+Processed 900 questions.
+Processed 1000 questions.
+Processed 1100 questions.
+Processed 1200 questions.
+Processed 1300 questions.
+Processed 1400 questions.
+Processed 1500 questions.
+Processed 1600 questions.
+Processed 1700 questions.
+Processed 1800 questions.
+Processed 1900 questions.
+Processed 2000 questions.
+Processed 2100 questions.
+Processed 2200 questions.
+Processed 2300 questions.
+Processed 2400 questions.
+Processed 2500 questions.
+Processed 2600 questions.
+Processed 2700 questions.
+Processed 2800 questions.
+Processed 2900 questions.
+Processed 3000 questions.
+Processed 3100 questions.
+Processed 3200 questions.
+Processed 3300 questions.
+Processed 3400 questions.
+Processed 3500 questions.
+Processed 3600 questions.
+Processed 3700 questions.
+Processed 3800 questions.
+Processed 3900 questions.
+Processed 4000 questions.
+Processed 4100 questions.
+Processed 4200 questions.
+Processed 4300 questions.
+Processed 4400 questions.
+Processed 4500 questions.
+Processed 4600 questions.
+Processed 4700 questions.
+Processed 4800 questions.
+Processed 4900 questions.
+Processed 5000 questions.
+Processed 5100 questions.
+Processed 5200 questions.
+Processed 5300 questions.
+Processed 5400 questions.
+Processed 5500 questions.
+Processed 5600 questions.
+Processed 5700 questions.
+Processed 5800 questions.
+Processed 5900 questions.
+Processed 6000 questions.
+Processed 6100 questions.
+Processed 6200 questions.
+Wrote 6208 answers to cse_476_final_project_answers.json and validated format successfully.
+```
+
+- Updated the cse_476_final_project_answers.json with the answers
+
 ## output files:
 
 - I have implemented to push all the model prediction, output for comparison for each strategy.
@@ -119,7 +234,8 @@ Again, some responses still matches the output but just not in the right format.
 - self refine - evaluation_self_refine.json
 - Chain of Thoughts - evaluation_CoT.json
 
-
+- Ran the final test and have answers for test data in
+cse_476_final_project_answers.json
 
 ## References:
 
