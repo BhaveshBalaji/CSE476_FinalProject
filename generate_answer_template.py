@@ -32,8 +32,8 @@ def load_questions(path: Path) -> List[Dict[str, Any]]:
 def build_answers(questions: List[Dict[str, Any]]) -> List[Dict[str, str]]:
     answers = []
 
-    # Replace "CoT" with your desired strategy for testing. (self_consistency, self_refine)
-    # I am using Chain of Thought strategy for fast and accurate results.
+    ### Replace "CoT" with your desired strategy for testing. (self_consistency, self_refine)
+    ### I am using Chain of Thought strategy for fast and accurate results.
     agent = Agent(strategy="CoT") 
     for idx, question in enumerate(questions, start=1):
         real_answer = agent.solve(question["input"])

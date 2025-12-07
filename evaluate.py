@@ -80,8 +80,12 @@ def evaluate(dev_data, strategy):
     return results
 
 def main():
+    ### You can change the path to dev set file as needed.
     dev_data_path = Path("sub_dev_set.json")
     dev_data = load_dev_data(dev_data_path)
+
+    ### You can change the strategy value here for testing.
+    ### Supported strategies: baseline, self_consistency, self_refine, CoT
     evaluate(dev_data, strategy="CoT")
 
 if __name__ == "__main__":

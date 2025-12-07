@@ -3,16 +3,19 @@
 ## TL;DR
 
 Implemented 3 inference time reasoning methods:
-    - self consistency multiple CoTs and majority voting.
 
-    - self refine - 3 llm calls (initial answer, critique, refined answer)
+- All of the inference time methods logic stays in "agent.py"
+    
+- self consistency multiple CoTs and majority voting.
 
-    - Chain of Thoughts - 2 llm calls (thinking, final answer)
+- self refine - 3 llm calls (initial answer, critique, refined answer)
 
-- To run the test:
+- Chain of Thoughts - 2 llm calls (thinking, final answer)
+
+- To run the test (to get cse476_final_project_answer.json):
     - Go to "generate_answer_template.py"
 
-    - Select the value of strategy to put inside 
+    - Select a value for strategy to put inside 
     ```python
     agent = Agent(strategy="your_strategy_value")
     ```
@@ -21,7 +24,23 @@ Implemented 3 inference time reasoning methods:
 
     - Run "generate_answer_template.py"
 
+- To run local test (get json file for each strategy)
+    - Go to "evaluate.py"
 
+    - Select a value for strategy between "self_consistency", "self_refine", "CoT"
+
+    - Put the value inside main() function that is present at the bottom of "evaluate.py" file.
+
+    - Select the input file path in the main() function as well. (Either "cse_final_project_dev_data.json" or "sub_dev_set.json" which 
+    much smaller version of given dev data).
+
+    - Run "evaluate.py"
+
+    - When we run evaluate again for the same strategy, the evaluation_{strategy}.json file (e.g., evaluation_CoT.json) will be overridden with new values.
+
+- Normalizing text function is in utils.py which I use to normalize target output and model response for evaluation.
+
+- API method call_model_chat_completion() is from given tutorial.py, present in model/api.py
 
 ## Steps I took:
 
@@ -156,6 +175,8 @@ function.
 ### Output I got:
 
 - Ran for almost 8 hours (4:45 PM - 12:45 AM)
+
+- I used "CoT" strategy for running the test for faster and efficient results.
 
 Terminal output:
 ```bash
